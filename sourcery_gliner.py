@@ -7,7 +7,7 @@ import os
 global_model = None
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-def get_entities(text: str, model: str = 'EmergentMethods/gliner_large_news-v2.1', labels: List[str] = ['PERSON', 'ORGANIZATION', 'LOCATION', 'DATE'], threshold: float = 0.4) -> List[Dict[str, str]]:
+def get_entities(text: str, model: str = os.getenv('MODEL', 'EmergentMethods/gliner_large_news-v2.1'), labels: List[str] = ['PERSON', 'ORGANIZATION', 'LOCATION', 'DATE'], threshold: float = 0.4) -> List[Dict[str, str]]:
     if global_model is None:
         load_model(model)
     entities = global_model.predict_entities(text, labels, threshold)
@@ -21,7 +21,7 @@ def unload_model():
         global_model = None
         gc.collect()
 
-def load_model(model: str = 'EmergentMethods/gliner_large_news-v2.1'):
+def load_model(model: str = os.getenv('MODEL', 'EmergentMethods/gliner_large_news-v2.1')):
     global global_model
     if global_model is None:
         # Extract model name without organization prefix
